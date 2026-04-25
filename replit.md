@@ -11,17 +11,15 @@ A warm, reflective journaling app that helps users gain perspective on stress. U
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
 - **Frontend**: React + Vite (artifacts/it-worked-out) — serves at `/`
-- **API framework**: Express 5 (artifacts/api-server) — serves at `/api` (only `/api/health` is active; entries are read/written directly from the browser to Supabase)
+- **API framework**: Express 5 (artifacts/api-server) — serves at `/api` (only `/api/healthz` is active; entries are read/written directly from the browser to Supabase)
 - **Database**: Supabase Postgres, accessed from the browser via `@supabase/supabase-js` with the publishable/anon key
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
+- **Validation**: Zod (frontend only)
 - **Build**: esbuild (CJS bundle for API), Vite (for frontend)
 
 ## Key Commands
 
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
 ## Architecture
@@ -36,7 +34,8 @@ A warm, reflective journaling app that helps users gain perspective on stress. U
 - Google Fonts: Fraunces (serif) + Outfit (sans)
 
 ### API (artifacts/api-server)
-- Only `/api/health` is active. The earlier `/api/entries` CRUD routes were removed when the data layer moved to Supabase.
+- Only `/api/healthz` is active. The earlier `/api/entries` CRUD routes were removed when the data layer moved to Supabase.
+- No database access — the previous server-side Drizzle/Postgres setup and shared `lib/*` packages (db, api-spec, api-zod, api-client-react) were removed since the browser talks to Supabase directly.
 
 ### Supabase database
 - Table: `stress_entries` (id, description, logged_date, reflection_date, status, created_at, updated_at)
