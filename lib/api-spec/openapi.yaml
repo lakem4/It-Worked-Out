@@ -3,13 +3,15 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API specification for It Worked Out journaling app
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: entries
+    description: Stress entry operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,137 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /entries:
+    get:
+      operationId: listEntries
+      tags: [entries]
+      summary: List all stress entries
+      description: Returns all stress entries sorted by reflection date ascending
+      responses:
+        "200":
+          description: List of entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StressEntry"
+
+    post:
+      operationId: createEntry
+      tags: [entries]
+      summary: Create a new stress entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewStressEntry"
+      responses:
+        "201":
+          description: Created entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StressEntry"
+        "400":
+          description: Invalid input
+
+  /entries/{id}:
+    get:
+      operationId: getEntry
+      tags: [entries]
+      summary: Get a single stress entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StressEntry"
+        "404":
+          description: Entry not found
+
+    patch:
+      operationId: updateEntry
+      tags: [entries]
+      summary: Update a stress entry (e.g. update status or description)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StressEntryUpdate"
+      responses:
+        "200":
+          description: Updated entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StressEntry"
+        "400":
+          description: Invalid input
+        "404":
+          description: Entry not found
+
+    delete:
+      operationId: deleteEntry
+      tags: [entries]
+      summary: Delete a stress entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted successfully
+        "404":
+          description: Entry not found
+
+  /entries/stats:
+    get:
+      operationId: getStats
+      tags: [entries]
+      summary: Get reflection stats summary
+      description: Returns counts of entries by status and pending reflections count
+      responses:
+        "200":
+          description: Stats summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntryStats"
+
+  /entries/due-for-reflection:
+    get:
+      operationId: listDueForReflection
+      tags: [entries]
+      summary: List entries past their reflection date that are still pending
+      responses:
+        "200":
+          description: List of entries due for reflection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StressEntry"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +167,89 @@ components:
       required:
         - status
 
+    EntryStatus:
+      type: string
+      enum:
+        - pending
+        - worked_out
+        - still_stressing
+
+    StressEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        description:
+          type: string
+        loggedDate:
+          type: string
+          format: date
+        reflectionDate:
+          type: string
+          format: date
+        status:
+          $ref: "#/components/schemas/EntryStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - description
+        - loggedDate
+        - reflectionDate
+        - status
+        - createdAt
+        - updatedAt
+
+    NewStressEntry:
+      type: object
+      properties:
+        description:
+          type: string
+        loggedDate:
+          type: string
+          format: date
+        reflectionDate:
+          type: string
+          format: date
+      required:
+        - description
+        - loggedDate
+        - reflectionDate
+
+    StressEntryUpdate:
+      type: object
+      properties:
+        description:
+          type: string
+        loggedDate:
+          type: string
+          format: date
+        reflectionDate:
+          type: string
+          format: date
+        status:
+          $ref: "#/components/schemas/EntryStatus"
+
+    EntryStats:
+      type: object
+      properties:
+        total:
+          type: integer
+        pending:
+          type: integer
+        workedOut:
+          type: integer
+        stillStressing:
+          type: integer
+        dueForReflection:
+          type: integer
+      required:
+        - total
+        - pending
+        - workedOut
+        - stillStressing
+        - dueForReflection

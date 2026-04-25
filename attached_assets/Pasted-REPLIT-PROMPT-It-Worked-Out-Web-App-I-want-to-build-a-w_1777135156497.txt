@@ -1,0 +1,79 @@
+REPLIT PROMPT — "It Worked Out" Web App
+
+I want to build a web application called "It Worked Out". Please make a plan to build this product before writing any code.
+What the app does:
+"It Worked Out" is a reflective journaling tool that helps users gain perspective on stress. Users log things that are stressing them out, set a future date to revisit the entry, and then later reflect on whether it was actually worth stressing over.
+
+Pages to build:
+1. Landing Page (index.html)
+
+Explains what "It Worked Out" is and why it's useful
+Warm, cozy aesthetic using earthy tones (think warm beiges, terracotta, sage green, soft browns)
+Friendly, encouraging copy that reassures the user that most things work out
+A clear call-to-action button that links to the app
+
+2. App Page (app.html)
+
+The main product experience
+
+
+Core App Features:
+
+Add a Stress Entry
+
+Text area where the user describes what is stressing them out
+Date field that auto-fills with today's date
+A "Reflection Date" date picker — the future date when they'll come back to reflect on this entry
+
+
+Dashboard of Past Entries
+
+Shows all logged stress entries in a card-based layout
+Each card displays: the stress description, the date it was logged, the reflection date, and the current status
+Cards are sorted so upcoming reflection dates appear first
+
+
+Reflection Status
+
+Each entry can be marked with one of two statuses:
+
+✅ "It Worked Out" — resolved, not worth the stress
+😟 "Still Stressing" — ongoing or unresolved
+
+
+Status can be updated at any time from the dashboard
+Unreviewed entries (before their reflection date) show a "Pending Reflection" state
+
+
+Reflection Prompt
+
+When a reflection date has passed and the entry is still pending, highlight the card visually and prompt the user with: "It's time to reflect — did this work out?"
+
+
+
+
+Design & Aesthetic:
+
+Warm and cozy feel — earthy tones: warm beige, terracotta, sage green, soft cream, warm brown
+Friendly, rounded UI elements (rounded cards, soft buttons)
+Comfortable typography — something like a serif or soft sans-serif font from Google Fonts
+Mobile responsive
+Encouraging, gentle tone throughout all copy
+
+
+Technical Requirements:
+
+HTML5, CSS3, and vanilla JavaScript (or a lightweight framework if needed)
+All markup and styles must pass HTML5 and CSS3 validation
+Must meet WCAG 2.1 Level AA accessibility standards (proper contrast, labels, alt text, keyboard navigation)
+I will be using an external Supabase database — please ask me for the Supabase credentials before building any database logic, and do not hardcode any placeholder values
+
+
+After planning, please tell me:
+
+Does this app require a database?
+What tables and columns would you recommend for Supabase?
+What environment variables will I need to provide?
+
+
+Once I confirm the plan and provide Supabase credentials, please begin building.
