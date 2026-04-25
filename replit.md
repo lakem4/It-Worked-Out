@@ -11,10 +11,9 @@ A warm, reflective journaling app that helps users gain perspective on stress. U
 - **Package manager**: pnpm
 - **TypeScript version**: 5.9
 - **Frontend**: React + Vite (artifacts/it-worked-out) — serves at `/`
-- **API framework**: Express 5 (artifacts/api-server) — serves at `/api`
-- **Database**: PostgreSQL + Drizzle ORM (lib/db)
+- **API framework**: Express 5 (artifacts/api-server) — serves at `/api` (only `/api/health` is active; entries are read/written directly from the browser to Supabase)
+- **Database**: Supabase Postgres, accessed from the browser via `@supabase/supabase-js` with the publishable/anon key
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle for API), Vite (for frontend)
 
 ## Key Commands
@@ -30,23 +29,18 @@ A warm, reflective journaling app that helps users gain perspective on stress. U
 ### Frontend (artifacts/it-worked-out)
 - Landing page at `/` — marketing/intro page with CTA
 - App page at `/app` — main journaling experience
-- React Query for data fetching (generated hooks from `@workspace/api-client-react`)
+- Talks directly to Supabase via `@supabase/supabase-js` (client at `src/lib/supabase.ts`)
+- TanStack Query hooks at `src/hooks/use-entries.ts` wrap Supabase calls and handle cache invalidation
+- Env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
 - Warm earthy design (terracotta, sage green, cream, warm beige)
 - Google Fonts: Fraunces (serif) + Outfit (sans)
 
 ### API (artifacts/api-server)
-- Routes defined in `artifacts/api-server/src/routes/`
-- `entries.ts` — CRUD for stress entries + stats + due-for-reflection endpoints
-- Validated with Zod schemas from `@workspace/api-zod`
+- Only `/api/health` is active. The earlier `/api/entries` CRUD routes were removed when the data layer moved to Supabase.
 
-### Database (lib/db)
+### Supabase database
 - Table: `stress_entries` (id, description, logged_date, reflection_date, status, created_at, updated_at)
-- Status enum: "pending" | "worked_out" | "still_stressing"
-
-### API Contract (lib/api-spec/openapi.yaml)
-- GET/POST /api/entries
-- GET/PATCH/DELETE /api/entries/:id
-- GET /api/entries/stats
-- GET /api/entries/due-for-reflection
+- Status enum (CHECK constraint): "pending" | "worked_out" | "still_stressing"
+- RLS is enabled with a permissive "Allow all" policy — there is no auth model, so the anon/publishable key has full read/write access (same security posture as the previous setup with no login).
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.

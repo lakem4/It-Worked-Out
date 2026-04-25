@@ -7,12 +7,8 @@ import {
   useDeleteEntry,
   useGetStats,
   useListDueForReflection,
-  getListEntriesQueryKey,
-  getGetStatsQueryKey,
-  getListDueForReflectionQueryKey
-} from "@workspace/api-client-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useState, useRef } from "react";
+} from "@/hooks/use-entries";
+import { useState } from "react";
 import { Plus, Calendar as CalendarIcon, CheckCircle2, HelpCircle, AlertCircle, ArrowRight, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -107,7 +103,6 @@ function AddEntrySection() {
   const [description, setDescription] = useState("");
   const [reflectionDate, setReflectionDate] = useState<Date | undefined>(undefined);
   const createEntry = useCreateEntry();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   
   const handleSubmit = (e: React.FormEvent) => {
@@ -128,8 +123,6 @@ function AddEntrySection() {
       onSuccess: () => {
         setDescription("");
         setReflectionDate(undefined);
-        queryClient.invalidateQueries({ queryKey: getListEntriesQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getGetStatsQueryKey() });
         toast({
           title: "Saved.",
           description: "We'll check back on this later.",
@@ -205,7 +198,6 @@ function AddEntrySection() {
 function EntryCard({ entry }: { entry: any }) {
   const updateEntry = useUpdateEntry();
   const deleteEntry = useDeleteEntry();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   
   const isPending = entry.status === "pending";
@@ -218,9 +210,6 @@ function EntryCard({ entry }: { entry: any }) {
       data: { status }
     }, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getListEntriesQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getGetStatsQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getListDueForReflectionQueryKey() });
         if (status === "worked_out") {
           toast({
             title: "It worked out!",
@@ -234,9 +223,6 @@ function EntryCard({ entry }: { entry: any }) {
   const handleDelete = () => {
     deleteEntry.mutate({ id: entry.id }, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getListEntriesQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getGetStatsQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getListDueForReflectionQueryKey() });
         toast({
           title: "Deleted",
           description: "Entry removed from your journal.",
