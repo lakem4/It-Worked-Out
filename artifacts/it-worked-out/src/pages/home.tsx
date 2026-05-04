@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { ArrowRight, Leaf, Shield, Sun, Feather, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/footer";
 
 export default function Home() {
   return (
@@ -147,11 +148,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="py-10 text-center border-t border-border">
-        <p className="text-muted-foreground text-sm">
-          It Worked Out &copy; {new Date().getFullYear()}. A quiet corner of the internet.
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

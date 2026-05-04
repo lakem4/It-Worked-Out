@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Footer from "@/components/footer";
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -40,7 +41,7 @@ export default function App() {
   const { data: dueEntries } = useListDueForReflection();
   
   return (
-    <div className="min-h-[100dvh] bg-background font-sans text-foreground">
+    <div className="min-h-[100dvh] bg-background font-sans text-foreground flex flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
         <div className="container max-w-5xl mx-auto flex h-16 items-center px-4">
           <Link href="/" className="flex items-center gap-2 mr-6 font-serif text-xl font-medium tracking-tight">
@@ -59,7 +60,7 @@ export default function App() {
         </div>
       </header>
       
-      <main className="container max-w-3xl mx-auto px-4 py-8 md:py-12 space-y-12">
+      <main className="container max-w-3xl mx-auto px-4 py-8 md:py-12 space-y-12 flex-1 w-full">
         <AddEntrySection />
         
         <div className="space-y-6">
@@ -95,6 +96,8 @@ export default function App() {
           )}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
